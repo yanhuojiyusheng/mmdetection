@@ -8,7 +8,11 @@ from copy import deepcopy
 from mmengine import ConfigDict
 from mmengine.config import Config, DictAction
 from mmengine.runner import Runner
-
+import sys
+# ensure that the correct mmdetection root directory is used for module imports
+script_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(script_dir)
+sys.path.insert(0, parent_dir)
 from mmdet.engine.hooks.utils import trigger_visualization_hook
 from mmdet.evaluation import DumpDetResults
 from mmdet.registry import RUNNERS
