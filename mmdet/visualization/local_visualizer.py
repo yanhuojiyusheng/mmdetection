@@ -107,7 +107,7 @@ class DetLocalVisualizer(Visualizer):
 
     def _draw_instances(self, image: np.ndarray, instances: ['InstanceData'],
                         classes: Optional[List[str]],
-                        palette: Optional[List[tuple]]) -> np.ndarray:
+                        palette: Optional[List[tuple]],draw_bbox=True,draw_mask=True) -> np.ndarray:
         """Draw instances of GT or prediction.
 
         Args:
@@ -123,7 +123,7 @@ class DetLocalVisualizer(Visualizer):
         """
         self.set_image(image)
 
-        if 'bboxes' in instances and instances.bboxes.sum() > 0:
+        if draw_bbox and 'bboxes' in instances and instances.bboxes.sum() > 0:
             bboxes = instances.bboxes
             labels = instances.labels
 
@@ -168,7 +168,7 @@ class DetLocalVisualizer(Visualizer):
                         'edgecolor': 'none'
                     }])
 
-        if 'masks' in instances:
+        if draw_mask and 'masks' in instances:
             labels = instances.labels
             masks = instances.masks
             if isinstance(masks, torch.Tensor):
@@ -195,7 +195,7 @@ class DetLocalVisualizer(Visualizer):
 
             if len(labels) > 0 and \
                     ('bboxes' not in instances or
-                     instances.bboxes.sum() == 0):
+                     instances.bboxes.sum() == 0 or not draw_bbox):
                 # instances.bboxes.sum()==0 represent dummy bboxes.
                 # A typical example of SOLO does not exist bbox branch.
                 areas = []
@@ -397,6 +397,8 @@ class DetLocalVisualizer(Visualizer):
             data_sample: Optional['DetDataSample'] = None,
             draw_gt: bool = True,
             draw_pred: bool = True,
+            draw_bbox: bool = True,
+            draw_mask: bool = True,
             show: bool = False,
             wait_time: float = 0,
             # TODO: Supported in mmengine's Viusalizer.
@@ -445,11 +447,11 @@ class DetLocalVisualizer(Visualizer):
             if 'gt_instances' in data_sample:
                 gt_img_data = self._draw_instances(image,
                                                    data_sample.gt_instances,
-                                                   classes, palette)
+                                                   classes, palette,draw_bbox=draw_bbox,draw_mask=draw_mask)
             if 'gt_sem_seg' in data_sample:
                 gt_img_data = self._draw_sem_seg(gt_img_data,
                                                  data_sample.gt_sem_seg,
-                                                 classes, palette)
+                                                 classes, palette,draw_bbox=draw_bbox,draw_mask=draw_mask)
 
             if 'gt_panoptic_seg' in data_sample:
                 assert classes is not None, 'class information is ' \
@@ -466,12 +468,12 @@ class DetLocalVisualizer(Visualizer):
                 pred_instances = pred_instances[
                     pred_instances.scores > pred_score_thr]
                 pred_img_data = self._draw_instances(image, pred_instances,
-                                                     classes, palette)
+                                                     classes, palette, draw_bbox=draw_bbox, draw_mask=draw_mask)
 
             if 'pred_sem_seg' in data_sample:
                 pred_img_data = self._draw_sem_seg(pred_img_data,
                                                    data_sample.pred_sem_seg,
-                                                   classes, palette)
+                                                   classes, palette, draw_bbox=draw_bbox, draw_mask=draw_mask)
 
             if 'pred_panoptic_seg' in data_sample:
                 assert classes is not None, 'class information is ' \

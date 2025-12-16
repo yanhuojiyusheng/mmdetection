@@ -55,6 +55,10 @@ class DetVisualizationHook(Hook):
                  interval: int = 50,
                  score_thr: float = 0.3,
                  show: bool = False,
+                 draw_pred=True,
+                 draw_gt=True,
+                 draw_bbox=True,
+                 draw_mask=True,
                  wait_time: float = 0.,
                  test_out_dir: Optional[str] = None,
                  backend_args: dict = None):
@@ -62,6 +66,10 @@ class DetVisualizationHook(Hook):
         self.interval = interval
         self.score_thr = score_thr
         self.show = show
+        self.draw_pred = draw_pred
+        self.draw_gt = draw_gt
+        self.draw_bbox = draw_bbox
+        self.draw_mask = draw_mask
         if self.show:
             # No need to think about vis backends.
             self._visualizer._vis_backends = {}
@@ -147,6 +155,10 @@ class DetVisualizationHook(Hook):
                 show=self.show,
                 wait_time=self.wait_time,
                 pred_score_thr=self.score_thr,
+                draw_pred=self.draw_pred,
+                draw_gt=self.draw_gt,
+                draw_bbox=self.draw_bbox,
+                draw_mask=self.draw_mask,
                 out_file=out_file,
                 step=self._test_index)
 

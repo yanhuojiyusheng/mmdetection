@@ -99,7 +99,6 @@ val_evaluator = dict(
     format_only=False,
     backend_args=backend_args,
     outfile_prefix='./work_dirs/val_results/',
-    use_percent_area=False,
 )
 test_evaluator = dict(
     type='CocoMetric',
@@ -109,6 +108,5 @@ test_evaluator = dict(
     classwise=True,
     outfile_prefix = './work_dirs/test_results/',
     backend_args=backend_args,
-    use_percent_area=False,
     )
 
